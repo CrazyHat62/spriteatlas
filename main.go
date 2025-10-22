@@ -15,8 +15,6 @@ func main() {
 
 func ReadAtlas(name string) (string, error) {
 
-	var v []byte
-
 	file, err := os.Open(name)
 	if err != nil && err != io.EOF {
 		os.Exit(1)
@@ -27,8 +25,18 @@ func ReadAtlas(name string) (string, error) {
 	defer file.Close()
 	reader := bufio.NewReader(file)
 
+	str, err = ParseAtlas(reader)
+
+	return str, err
+
+}
+
+func ParseAtlas(reader *bufio.Reader) (string, error) {
+	var str string
+	var line []byte
+	var err error
 	for {
-		line, err := reader.ReadBytes('\n')
+		line, err = reader.ReadBytes('\n')
 		if err != nil && err != io.EOF {
 			return "", err
 		}
@@ -36,8 +44,8 @@ func ReadAtlas(name string) (string, error) {
 		line = bytes.ReplaceAll(line, []byte("\r"), []byte(""))
 		line = bytes.ReplaceAll(line, []byte("\n"), []byte(""))
 		//line = bytes.ReplaceAll(line, []byte(" "), []byte(""))
-		v = line
-		s := string(v)
+
+		s := string(line)
 		s = strings.Trim(s, " ")
 		if s == "" || s[:1] == "#" || s[:2] == "//" {
 			continue
@@ -47,5 +55,4 @@ func ReadAtlas(name string) (string, error) {
 	}
 
 	return str, err
-
 }
