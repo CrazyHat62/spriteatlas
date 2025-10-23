@@ -66,3 +66,13 @@ func TestStripAtlasLine(t *testing.T) {
 		t.Errorf("got %q want %q", got, want)
 	}
 }
+
+func TestPageParse(t *testing.T) {
+	var page Page
+	err := page.ParsePageStr([]string{"atiles.bmp", "255,0,255,255", "true", "48,48", "0,0,0,0"})
+	got := page.PageToStr()
+	want := "page atiles.bmp has default tilesize 48 48"
+	if got != want {
+		t.Errorf("got %q want %q with error %q", got, want, err)
+	}
+}
