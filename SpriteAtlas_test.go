@@ -67,7 +67,7 @@ func TestStripAtlasLine(t *testing.T) {
 	}
 }
 
-func TestPageParse(t *testing.T) {
+func TestParsePageStr(t *testing.T) {
 	var page Page
 	err := page.ParsePageStr([]string{"atiles.bmp", "255,0,255,255", "true", "48,48", "0,0,0,0"})
 	got := page.PageToStr()
