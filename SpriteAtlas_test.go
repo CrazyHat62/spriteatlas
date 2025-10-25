@@ -1,60 +1,17 @@
 package spriteatlas
 
 import (
-	"io"
-	"strings"
 	"testing"
 )
 
 // TestReadAtlasRow is a test to verify file open and a general Parse the of specific atlas
 func TestOpenAtlas(t *testing.T) {
 
-	file, reader, err1 := OpenAtlas("atiles_test.atlas")
-	if err1 != nil && err1 != io.EOF {
-		t.Errorf("got open file error %q", err1)
-	}
-	defer file.Close()
-
-	var str string
-	var err error
-	var line []byte
-	var page Page
-
-	for {
-		line, err = reader.ReadBytes('\n')
-		if err != nil && err != io.EOF {
-			str = ""
-			break
-		}
-		str = StripAtlasLine(line)
-		if str == "" || str[:1] == "#" || str[:2] == "//" {
-			continue
-		}
-		a := strings.Split(str, " ")
-		for i := 0; i < len(a); i++ {
-			a[i] = strings.Trim(a[i], " ")
-		}
-		if a[0] == "page" {
-			page.ParsePageStr(a[1:])
-			break
-		}
-		if a[0] != "page" {
-			t.Errorf("got %q Not page, ", a[0])
-			return
-		}
+	err := Spriteatlas("", "atiles_test.atlas")
+	if err != nil {
+		t.Errorf("got open file error %q", err)
 	}
 
-	got := page.PageToStr()
-
-	want := "page atiles.bmp has default tilesize 48 48"
-
-	if got != want {
-		if err != nil {
-			t.Errorf("got %q want %q with error %q", got, want, err.Error())
-		} else {
-			t.Errorf("got %q want %q with NO error", got, want)
-		}
-	}
 }
 
 func TestStripAtlasLine(t *testing.T) {
@@ -72,6 +29,16 @@ func TestParsePageStr(t *testing.T) {
 	err := page.ParsePageStr([]string{"atiles.bmp", "255,0,255,255", "true", "48,48", "0,0,0,0"})
 	got := page.PageToStr()
 	want := "page atiles.bmp has default tilesize 48 48"
+	if got != want {
+		t.Errorf("got %q want %q with error %q", got, want, err)
+	}
+}
+
+func TestParseRegionStr(t *testing.T) {
+	var reg Region
+	err := reg.ParseRegionStr([]string{"player_walk", "1,148,384,244", "48,48", "north,1,1,4", "west,1,5,4", "south,2,1,4", "east,2,5,4"})
+	got := reg.RegionToStr()
+	want := "region player_walk has 4 animations"
 	if got != want {
 		t.Errorf("got %q want %q with error %q", got, want, err)
 	}
