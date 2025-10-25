@@ -1,6 +1,7 @@
 package spriteatlas
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -42,4 +43,12 @@ func TestParseRegionStr(t *testing.T) {
 	if got != want {
 		t.Errorf("got %q want %q with error %q", got, want, err)
 	}
+}
+
+func ExampleStripAtlasLine() {
+	b := []byte("abc\n\r")
+	got := StripAtlasLine(b)
+
+	fmt.Println(got)
+	// Output: abc
 }
