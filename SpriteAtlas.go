@@ -168,29 +168,35 @@ func (p *Page) PageToStr() string {
 	return fmt.Sprintf("page %s has default tilesize %d %d", p.name, p.tile_size.X, p.tile_size.Y)
 }
 
-// Spriteatlas reads a atlas at Path + Name ~ use forward slashe(s) in path.
+
+var page Page
+var region Region
+
+
+
+// Spriteatlas reads a atlas at Path + Name ~ use forward slash(s) in path.
 // reads the spritesheet as an image and will 'overwrite' alpha color if specified and found.
 // alpha-color is NOT the same as pre-multiplied-alpha
-func Spriteatlas(filePath string, fileName string) error {
+func Spriteatlas(filePath string, fileName string) (*Page, *Region, error) {
+
+
 	if len(filePath) > 0 && filePath[len(filePath)-1] != '/' {
 		filePath = filePath + "/"
 	}
 
 	fileBuf, err := os.ReadFile(filePath + fileName)
 	if err != nil {
-		return err
+		return &page, &region, err
 	}
 
 	err1 := ParseAtlas(fileBuf)
 
-	return err1
+	return &page, &region, err1
 }
 
 func ParseAtlas(fileBytes []byte) error {
 	var str string
 	var err error
-	var page Page
-	var region Region
 
 	for line := range bytes.Lines(fileBytes) {
 
@@ -211,7 +217,7 @@ func ParseAtlas(fileBytes []byte) error {
 
 	}
 
-	println(page.PageToStr(), region.RegionToStr(), err)
+	//println(page.PageToStr(), region.RegionToStr(), err)
 
 	return err
 }

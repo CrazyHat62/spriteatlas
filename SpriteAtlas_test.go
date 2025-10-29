@@ -46,6 +46,7 @@ func TestParseRegionStr(t *testing.T) {
 }
 
 func ExampleStripAtlasLine() {
+	// the last comment actualy causes this to be run ~ not just compiler tested
 	b := []byte("abc\n\r")
 	got := StripAtlasLine(b)
 
