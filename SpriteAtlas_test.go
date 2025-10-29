@@ -49,6 +49,21 @@ func TestParseRegionStr(t *testing.T) {
 	}
 }
 
+func TestAnimKeys(t *testing.T) {
+	var reg Region
+	err := reg.ParseRegionStr([]string{"player_walk", "1,148,384,244", "48,48", "north,1,1,4", "west,1,5,4", "south,2,1,4", "east,2,5,4"})
+	for _, key := range reg.AnimKeys() {
+		got := key
+		switch {
+		case key == "north" || key == "south" || key == "east" || key == "west":
+			continue
+		default:
+			want := "north, south, east, or west"
+			t.Errorf("got %q want %q with error %q", got, want, err)
+		}
+	}
+}
+
 func ExampleStripAtlasLine() {
 	// the last comment actualy causes this to be run ~ not just compiler tested
 	b := []byte("abc\n\r")

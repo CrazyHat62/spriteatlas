@@ -106,6 +106,15 @@ func (r *Region) RegionToStr() string {
 	return fmt.Sprintf("region %s has %d animations", r.Name, len(r.Anims))
 }
 
+func (r *Region) AnimKeys() []string {
+
+	var keys []string
+	for key := range r.Anims {
+		keys = append(keys, key)
+	}
+	return keys
+}
+
 type Page struct {
 	name             string
 	alpha_color      string
@@ -168,17 +177,13 @@ func (p *Page) PageToStr() string {
 	return fmt.Sprintf("page %s has default tilesize %d %d", p.name, p.tile_size.X, p.tile_size.Y)
 }
 
-
 var page Page
 var region Region
-
-
 
 // Spriteatlas reads a atlas at Path + Name ~ use forward slash(s) in path.
 // reads the spritesheet as an image and will 'overwrite' alpha color if specified and found.
 // alpha-color is NOT the same as pre-multiplied-alpha
 func Spriteatlas(filePath string, fileName string) (*Page, *Region, error) {
-
 
 	if len(filePath) > 0 && filePath[len(filePath)-1] != '/' {
 		filePath = filePath + "/"
