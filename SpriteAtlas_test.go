@@ -8,11 +8,15 @@ import (
 // TestReadAtlasRow is a test to verify file open and a general Parse the of specific atlas
 func TestOpenAtlas(t *testing.T) {
 
-	err := Spriteatlas("", "atiles_test.atlas")
+	page, region, err := Spriteatlas("", "atiles_test.atlas")
 	if err != nil {
 		t.Errorf("got open file error %q", err)
 	}
-
+	want := "page atiles.bmp has default tilesize 48 48. region player_walk has 4 animations"
+	got := page.PageToStr() + ". " + region.RegionToStr()
+	if got != want {
+		t.Errorf("got %q want %q", got, want)
+	}
 }
 
 func TestStripAtlasLine(t *testing.T) {
