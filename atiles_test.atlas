@@ -6,9 +6,9 @@
 # animations are sequential and same size frames (for now)
 # frame is for non contigeous frames in an animation
 
-# page contains : name alphacolor use-imageRegionHints tileSize margin
+# page contains : name alphacolor use-imageRegionHints sheetSize margin
 # region contains : name regionBounds tileSizeOverride animationName,row,col,count
 # frame contains : name index size pos ... and may be anywhere in the spritesheet, and in order in spriteAtlas
 
-page atiles.bmp 255,0,255,255 true 48,48 0,0,0,0
-region player_walk 1,148,384,244 48,48 north,1,1,4 west,1,5,4 south,2,1,4 east,2,5,4
+page atiles.bmp 255,0,255,255 true 1729,874 1,1,1,1
+region player_walk 1,148,384,242 47,47 north,1,1,4 west,1,5,4 south,2,1,4 east,2,5,4
