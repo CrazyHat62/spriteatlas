@@ -7,7 +7,7 @@
 # frame is for non contigeous frames in an animation
 
 # page contains : name alphacolor use-imageRegionHints sheetSize margin
-# region contains : name regionBounds tileSizeOverride animationName,row,col,count
+# region contains : name regionBounds tileSizeOverride animationName,row,col,count (not zero based)
 # frame contains : name index size pos ... and may be anywhere in the spritesheet, and in order in spriteAtlas
 
 page atiles.bmp 255,0,255,255 true 1729,874 1,1,1,1
