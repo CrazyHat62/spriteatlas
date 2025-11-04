@@ -64,54 +64,65 @@ func TestAnimKeys(t *testing.T) {
 	}
 }
 
-// func TestGetAnimation(t *testing.T) {
+func TestGetAnimation(t *testing.T) {
 
-// 	var reg Region
-// 	err := reg.ParseRegionStr([]string{"player_walk", "1,148,384,244", "47,47", "north,1,1,4", "west,1,5,4", "south,2,1,4", "east,2,5,4"})
-// 	if err != nil {
-// 		t.Error(err.Error())
-// 	}
-// 	got1, err := reg.GetAnimation("north", 0)
-// 	if err != nil {
-// 		t.Error(err.Error())
-// 	}
-// 	got2, err := reg.GetAnimation("north", 1)
-// 	if err != nil {
-// 		t.Error(err.Error())
-// 	}
-// 	got3, err := reg.GetAnimation("north", 2)
-// 	if err != nil {
-// 		t.Error(err.Error())
-// 	}
-// 	got4, err := reg.GetAnimation("north", 3)
-// 	if err != nil {
-// 		t.Error(err.Error())
-// 	}
-// 	got5, err := reg.GetAnimation("north", 4)
-// 	if err != nil {
-// 		t.Error(err.Error())
-// 	}
-// 	want1 := RECT{X: 1, Y: 148, Width: 47, Height: 47}
-// 	want2 := RECT{X: 48, Y: 148, Width: 47, Height: 47}
-// 	want3 := RECT{X: 95, Y: 148, Width: 47, Height: 47}
-// 	want4 := RECT{X: 142, Y: 148, Width: 47, Height: 47}
-// 	want5 := RECT{X: 1, Y: 148, Width: 47, Height: 47}
-// 	if got1 != want1 {
-// 		t.Errorf("got %v want %v", got1, want1)
-// 	}
-// 	if got2 != want2 {
-// 		t.Errorf("got %v want %v", got2, want2)
-// 	}
-// 	if got3 != want3 {
-// 		t.Errorf("got %v want %v", got3, want3)
-// 	}
-// 	if got4 != want4 {
-// 		t.Errorf("got %v want %v", got4, want4)
-// 	}
-// 	if got5 != want5 {
-// 		t.Errorf("got %v want %v", got5, want5)
-// 	}
-// }
+	var reg Region
+	err := reg.ParseRegionStr([]string{"player_walk", "1,148,384,244", "47,47", "north,1,1,4", "west,1,5,4", "south,2,1,4", "east,2,5,4"})
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	want := RECT{X: 1, Y: 148, Width: 47, Height: 47}
+	got, nextidx, err := reg.GetAnimation("north", 0)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+
+	want = RECT{X: 48, Y: 148, Width: 47, Height: 47}
+	got, nextidx, err = reg.GetAnimation("north", nextidx)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+
+	want = RECT{X: 95, Y: 148, Width: 47, Height: 47}
+	got, nextidx, err = reg.GetAnimation("north", nextidx)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+
+	want = RECT{X: 142, Y: 148, Width: 47, Height: 47}
+	got, nextidx, err = reg.GetAnimation("north", nextidx)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+
+	want = RECT{X: 1, Y: 148, Width: 47, Height: 47}
+	got, nextidx, err = reg.GetAnimation("north", nextidx)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+
+}
 
 func ExampleStripAtlasLine() {
 	// the last comment actualy causes this to be run ~ not just compiler tested

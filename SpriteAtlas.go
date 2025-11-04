@@ -107,27 +107,28 @@ func (r *Region) ParseRegionStr(values []string) error {
 }
 
 // GetAnimation gets the RECT for the given animation name and frame index in that animation
-func (r *Region) GetAnimation(animName string, idx int) (RECT, error) {
+func (r *Region) GetAnimation(animName string, idx int) (RECT, int, error) {
 	anim, ok := r.Anims[animName]
 	var rect RECT
 	if !ok {
-		return rect, errors.New("animation %q not found in region " + r.Name)
+		return rect, idx, errors.New("animation %q not found in region " + r.Name)
 	}
 
 	rect = RECT{X: 0, Y: 0, Width: r.TileSize.X, Height: r.TileSize.Y}
-	nextFrame := 0
+	notFirstFrame := 0
 	idx = idx % anim.Count
 	if idx > 0 {
-		nextFrame = 1
+		notFirstFrame = 1
 	}
 
-	offsetX := (anim.Pos0.X - 1) * region.TileSize.X
-	offsetY := (anim.Pos0.Y - 1) * region.TileSize.Y
+	offsetX := (anim.Pos0.X - 1) * r.TileSize.X
+	offsetY := (anim.Pos0.Y - 1) * r.TileSize.Y
 
-	rect.X = idx*region.TileSize.X + nextFrame + offsetX + region.Bounds.X
-	rect.Y = offsetY + region.Bounds.Y
+	rect.X = idx*r.TileSize.X + offsetX + r.Bounds.X + notFirstFrame
+	rect.Y = offsetY + r.Bounds.Y
 
-	return rect, nil
+	idx = idx + 1
+	return rect, idx, nil
 }
 
 func (r *Region) RegionToStr() string {
@@ -144,8 +145,8 @@ func (r *Region) AnimKeys() []string {
 }
 
 type Page struct {
-	name             string
-	alpha_color      string
+	Name             string
+	Alpha_color      string
 	imageRegionMarks bool
 	sheetSize        XY
 	margin           RECT
@@ -154,8 +155,8 @@ type Page struct {
 func (p *Page) ParsePageStr(values []string) error {
 	var err error
 	var errstr string = ""
-	p.name = values[0]
-	p.alpha_color = values[1]
+	p.Name = values[0]
+	p.Alpha_color = values[1]
 	p.imageRegionMarks, err = strconv.ParseBool(values[2])
 	if err != nil {
 		errstr = errstr + "Parse Atlas region marks failed, "
@@ -202,7 +203,7 @@ func (p *Page) ParsePageStr(values []string) error {
 }
 
 func (p *Page) PageToStr() string {
-	return fmt.Sprintf("page %s has alphacolor=%s and sheetSize %d %d with margins %d,%d,%d,%d", p.name, p.alpha_color, p.sheetSize.X, p.sheetSize.Y, p.margin.X, p.margin.Y, p.margin.Width, p.margin.Height)
+	return fmt.Sprintf("page %s has alphacolor=%s and sheetSize %d %d with margins %d,%d,%d,%d", p.Name, p.Alpha_color, p.sheetSize.X, p.sheetSize.Y, p.margin.X, p.margin.Y, p.margin.Width, p.margin.Height)
 }
 
 var page Page
