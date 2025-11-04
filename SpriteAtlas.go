@@ -115,16 +115,13 @@ func (r *Region) GetAnimation(animName string, idx int) (RECT, int, error) {
 	}
 
 	rect = RECT{X: 0, Y: 0, Width: r.TileSize.X, Height: r.TileSize.Y}
-	notFirstFrame := 0
+
 	idx = idx % anim.Count
-	if idx > 0 {
-		notFirstFrame = 1
-	}
 
 	offsetX := (anim.Pos0.X - 1) * r.TileSize.X
 	offsetY := (anim.Pos0.Y - 1) * r.TileSize.Y
 
-	rect.X = idx*r.TileSize.X + offsetX + r.Bounds.X + notFirstFrame
+	rect.X = idx*r.TileSize.X + offsetX + r.Bounds.X + idx
 	rect.Y = offsetY + r.Bounds.Y
 
 	idx = idx + 1

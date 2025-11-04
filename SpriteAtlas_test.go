@@ -82,7 +82,7 @@ func TestGetAnimation(t *testing.T) {
 		t.Errorf("got %v want %v", got, want)
 	}
 
-	want = RECT{X: 48, Y: 148, Width: 47, Height: 47}
+	want = RECT{X: 49, Y: 148, Width: 47, Height: 47}
 	got, nextidx, err = reg.GetAnimation("north", nextidx)
 
 	if err != nil {
@@ -92,7 +92,7 @@ func TestGetAnimation(t *testing.T) {
 		t.Errorf("got %v want %v", got, want)
 	}
 
-	want = RECT{X: 95, Y: 148, Width: 47, Height: 47}
+	want = RECT{X: 97, Y: 148, Width: 47, Height: 47}
 	got, nextidx, err = reg.GetAnimation("north", nextidx)
 
 	if err != nil {
@@ -102,7 +102,7 @@ func TestGetAnimation(t *testing.T) {
 		t.Errorf("got %v want %v", got, want)
 	}
 
-	want = RECT{X: 142, Y: 148, Width: 47, Height: 47}
+	want = RECT{X: 145, Y: 148, Width: 47, Height: 47}
 	got, nextidx, err = reg.GetAnimation("north", nextidx)
 
 	if err != nil {
