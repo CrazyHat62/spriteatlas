@@ -5,6 +5,15 @@ import (
 	"testing"
 )
 
+var (
+	pageAns1    = "page atiles.bmp has alphacolor=255,0,255,255 and sheetSize 1729 874 with margins 1,1,1,1. region player_walk has 4 animations"
+	pageAns2    = "page atiles.bmp 255,0,255,255 true 48,48 0,0,0,0"
+	pageAns3    = "page atiles.bmp has alphacolor=255,0,255,255 and sheetSize 48 48 with margins 0,0,0,0"
+	pageStr1    = "page atiles.bmp 255,0,255,255 true 48,48 0,0,0,0\n\r"
+	pageStrArr1 = []string{"atiles.bmp", "255,0,255,255", "true", "48,48", "0,0,0,0"}
+	regionStr1  = []string{"player_walk", "1,148,384,243", "48,48", "north,1,1,4", "west,5,1,4", "south,1,2,4", "east,5,2,4"}
+)
+
 // TestReadAtlasRow is a test to verify file open and a general Parse the of specific atlas
 func TestOpenAtlas(t *testing.T) {
 
@@ -12,7 +21,7 @@ func TestOpenAtlas(t *testing.T) {
 	if err != nil {
 		t.Errorf("got open file error %q", err)
 	}
-	want := "page atiles.bmp has alphacolor=255,0,255,255 and sheetSize 1729 874 with margins 1,1,1,1. region player_walk has 4 animations"
+	want := pageAns1
 	got := page.PageToStr() + ". " + region.RegionToStr()
 	if got != want {
 		t.Errorf("got %q want %q", got, want)
@@ -20,10 +29,10 @@ func TestOpenAtlas(t *testing.T) {
 }
 
 func TestStripAtlasLine(t *testing.T) {
-	b := []byte("page atiles.bmp 255,0,255,255 true 48,48 0,0,0,0\n\r")
+	b := []byte(pageStr1)
 	got := StripAtlasLine(b)
 
-	want := "page atiles.bmp 255,0,255,255 true 48,48 0,0,0,0"
+	want := pageAns2
 	if got != want {
 		t.Errorf("got %q want %q", got, want)
 	}
@@ -31,9 +40,9 @@ func TestStripAtlasLine(t *testing.T) {
 
 func TestParsePageStr(t *testing.T) {
 	var page Page
-	err := page.ParsePageStr([]string{"atiles.bmp", "255,0,255,255", "true", "48,48", "0,0,0,0"})
+	err := page.ParsePageStr(pageStrArr1)
 	got := page.PageToStr()
-	want := "page atiles.bmp has alphacolor=255,0,255,255 and sheetSize 48 48 with margins 0,0,0,0"
+	want := pageAns3
 	if got != want {
 		t.Errorf("got %q want %q with error %q", got, want, err)
 	}
@@ -41,7 +50,7 @@ func TestParsePageStr(t *testing.T) {
 
 func TestParseRegionStr(t *testing.T) {
 	var reg Region
-	err := reg.ParseRegionStr([]string{"player_walk", "1,148,384,244", "48,48", "north,1,1,4", "west,1,5,4", "south,2,1,4", "east,2,5,4"})
+	err := reg.ParseRegionStr(regionStr1)
 	got := reg.RegionToStr()
 	want := "region player_walk has 4 animations"
 	if got != want {
@@ -51,7 +60,7 @@ func TestParseRegionStr(t *testing.T) {
 
 func TestAnimKeys(t *testing.T) {
 	var reg Region
-	err := reg.ParseRegionStr([]string{"player_walk", "1,148,384,244", "48,48", "north,1,1,4", "west,1,5,4", "south,2,1,4", "east,2,5,4"})
+	err := reg.ParseRegionStr(regionStr1)
 	for _, key := range reg.AnimKeys() {
 		got := key
 		switch {
@@ -67,12 +76,18 @@ func TestAnimKeys(t *testing.T) {
 func TestGetAnimation(t *testing.T) {
 
 	var reg Region
-	err := reg.ParseRegionStr([]string{"player_walk", "1,148,384,244", "47,47", "north,1,1,4", "west,1,5,4", "south,2,1,4", "east,2,5,4"})
+	s := 48
+	x := []int{1, 49, 97, 145}
+	//x2 := []int{48, 96, 144, 192}
+	y := []int{148, 196, 244, 292}
+	//y2 := []int{195, 243, 291, 339}
+	err := reg.ParseRegionStr(regionStr1)
 	if err != nil {
 		t.Error(err.Error())
 	}
 
-	want := RECT{X: 1, Y: 148, Width: 47, Height: 47}
+	want := RECT{X: x[0], Y: y[0], Width: s, Height: s}
+
 	got, nextidx, err := reg.GetAnimation("north", 0)
 
 	if err != nil {
@@ -82,7 +97,7 @@ func TestGetAnimation(t *testing.T) {
 		t.Errorf("got %v want %v", got, want)
 	}
 
-	want = RECT{X: 49, Y: 148, Width: 47, Height: 47}
+	want = RECT{X: x[1], Y: y[0], Width: s, Height: s}
 	got, nextidx, err = reg.GetAnimation("north", nextidx)
 
 	if err != nil {
@@ -92,7 +107,7 @@ func TestGetAnimation(t *testing.T) {
 		t.Errorf("got %v want %v", got, want)
 	}
 
-	want = RECT{X: 97, Y: 148, Width: 47, Height: 47}
+	want = RECT{X: x[2], Y: y[0], Width: s, Height: s}
 	got, nextidx, err = reg.GetAnimation("north", nextidx)
 
 	if err != nil {
@@ -102,7 +117,7 @@ func TestGetAnimation(t *testing.T) {
 		t.Errorf("got %v want %v", got, want)
 	}
 
-	want = RECT{X: 145, Y: 148, Width: 47, Height: 47}
+	want = RECT{X: x[3], Y: y[0], Width: s, Height: s}
 	got, nextidx, err = reg.GetAnimation("north", nextidx)
 
 	if err != nil {
@@ -112,8 +127,58 @@ func TestGetAnimation(t *testing.T) {
 		t.Errorf("got %v want %v", got, want)
 	}
 
-	want = RECT{X: 1, Y: 148, Width: 47, Height: 47}
+	want = RECT{X: x[0], Y: y[0], Width: 48, Height: 48}
 	got, nextidx, err = reg.GetAnimation("north", nextidx)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+
+	want = RECT{X: x[0], Y: y[1], Width: s, Height: s}
+	got, nextidx, err = reg.GetAnimation("south", 0)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+
+	want = RECT{X: x[1], Y: y[1], Width: s, Height: s}
+	got, nextidx, err = reg.GetAnimation("south", nextidx)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+
+	want = RECT{X: x[2], Y: y[1], Width: s, Height: s}
+	got, nextidx, err = reg.GetAnimation("south", nextidx)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+
+	want = RECT{X: x[3], Y: y[1], Width: s, Height: s}
+	got, nextidx, err = reg.GetAnimation("south", nextidx)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+
+	want = RECT{X: x[0], Y: y[1], Width: 48, Height: 48}
+	got, nextidx, err = reg.GetAnimation("south", nextidx)
 
 	if err != nil {
 		t.Error(err.Error())

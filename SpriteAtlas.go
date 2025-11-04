@@ -26,7 +26,7 @@ func (r *RECT) RectToStr() string {
 }
 
 type Anim struct {
-	Pos0  XY
+	Pos   XY
 	Count int
 }
 
@@ -96,7 +96,7 @@ func (r *Region) ParseRegionStr(values []string) error {
 			errstr = errstr + fmt.Sprintf("Parse Anim %q count failed, ", i[0])
 		}
 		pos := XY{row, col}
-		anim := Anim{Pos0: pos, Count: count}
+		anim := Anim{Pos: pos, Count: count}
 		r.Anims[i[0]] = anim
 	}
 
@@ -107,25 +107,29 @@ func (r *Region) ParseRegionStr(values []string) error {
 }
 
 // GetAnimation gets the RECT for the given animation name and frame index in that animation
-func (r *Region) GetAnimation(animName string, idx int) (RECT, int, error) {
+func (r *Region) GetAnimation(animName string, frameNumber int) (RECT, int, error) {
 	anim, ok := r.Anims[animName]
 	var rect RECT
 	if !ok {
-		return rect, idx, errors.New("animation %q not found in region " + r.Name)
+		return rect, frameNumber, errors.New("animation %q not found in region " + r.Name)
 	}
 
 	rect = RECT{X: 0, Y: 0, Width: r.TileSize.X, Height: r.TileSize.Y}
 
-	idx = idx % anim.Count
+	// frameNumber is zero based
+	frameNumber = frameNumber % anim.Count
 
-	offsetX := (anim.Pos0.X - 1) * r.TileSize.X
-	offsetY := (anim.Pos0.Y - 1) * r.TileSize.Y
+	//Change Anim Pos in Region Grid to zero based for calc
+	//Adjust Offset position of Animation in Region
+	offsetX := (anim.Pos.X - 1) * r.TileSize.X
+	offsetY := (anim.Pos.Y - 1) * r.TileSize.Y
 
-	rect.X = idx*r.TileSize.X + offsetX + r.Bounds.X + idx
+	rect.X = frameNumber*r.TileSize.X + offsetX + r.Bounds.X
 	rect.Y = offsetY + r.Bounds.Y
 
-	idx = idx + 1
-	return rect, idx, nil
+	//next frame
+	frameNumber = frameNumber + 1
+	return rect, frameNumber, nil
 }
 
 func (r *Region) RegionToStr() string {
