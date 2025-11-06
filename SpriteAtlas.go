@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -37,12 +38,24 @@ type Region struct {
 	Anims    map[string]Anim
 }
 
+type Page struct {
+	Name             string
+	Alpha_color      string
+	imageRegionMarks bool
+	sheetSize        XY
+	margin           RECT
+	Regions          map[string]Region
+}
+
+var page Page
+
 func (r *Region) ParseRegionStr(values []string) error {
 	var err error
 	var errstr string = ""
 	r.Anims = make(map[string]Anim)
 	//player_walk 1,148,384,244 48,48 north,1,1,4 west,1,5,4 south,2,1,4 east,2,5,4
 	r.Name = values[0]
+
 	p := strings.Split(values[1], ",")
 	px1, err := strconv.ParseInt(p[0], 0, 0)
 	if err != nil {
@@ -60,6 +73,7 @@ func (r *Region) ParseRegionStr(values []string) error {
 	if err != nil {
 		errstr = errstr + "Parse Region rect size Y2 failed, "
 	}
+
 	r.Bounds.X = int(px1)
 	r.Bounds.Width = int(px2)
 	r.Bounds.Y = int(py1)
@@ -106,8 +120,8 @@ func (r *Region) ParseRegionStr(values []string) error {
 	return nil
 }
 
-// GetAnimation gets the RECT for the given animation name and frame index in that animation
-func (r *Region) GetAnimation(animName string, frameNumber int) (RECT, int, error) {
+// GetSpriteFrame gets the RECT for the given animation name and frame index in that animation
+func (r *Region) GetSpriteFrame(animName string, frameNumber int) (RECT, int, error) {
 	anim, ok := r.Anims[animName]
 	var rect RECT
 	if !ok {
@@ -143,14 +157,6 @@ func (r *Region) AnimKeys() []string {
 		keys = append(keys, key)
 	}
 	return keys
-}
-
-type Page struct {
-	Name             string
-	Alpha_color      string
-	imageRegionMarks bool
-	sheetSize        XY
-	margin           RECT
 }
 
 func (p *Page) ParsePageStr(values []string) error {
@@ -200,6 +206,9 @@ func (p *Page) ParsePageStr(values []string) error {
 	if errstr != "" {
 		return errors.New(errstr)
 	}
+
+	p.Regions = make(map[string]Region)
+
 	return nil
 }
 
@@ -207,13 +216,10 @@ func (p *Page) PageToStr() string {
 	return fmt.Sprintf("page %s has alphacolor=%s and sheetSize %d %d with margins %d,%d,%d,%d", p.Name, p.Alpha_color, p.sheetSize.X, p.sheetSize.Y, p.margin.X, p.margin.Y, p.margin.Width, p.margin.Height)
 }
 
-var page Page
-var region Region
-
 // Spriteatlas reads a atlas at Path + Name ~ use forward slash(s) in path.
 // reads the spritesheet as an image and will 'overwrite' alpha color if specified and found.
 // alpha-color is NOT the same as pre-multiplied-alpha
-func Spriteatlas(filePath string, fileName string) (*Page, *Region, error) {
+func Spriteatlas(filePath string, fileName string) (*Page, error) {
 
 	if len(filePath) > 0 && filePath[len(filePath)-1] != '/' {
 		filePath = filePath + "/"
@@ -221,12 +227,12 @@ func Spriteatlas(filePath string, fileName string) (*Page, *Region, error) {
 
 	fileBuf, err := os.ReadFile(filePath + fileName)
 	if err != nil {
-		return &page, &region, err
+		return &page, err
 	}
 
 	err1 := ParseAtlas(fileBuf)
 
-	return &page, &region, err1
+	return &page, err1
 }
 
 func ParseAtlas(fileBytes []byte) error {
@@ -239,6 +245,7 @@ func ParseAtlas(fileBytes []byte) error {
 		if str == "" || str[:1] == "#" || str[:2] == "//" {
 			continue
 		}
+
 		a := strings.Split(str, " ")
 		for i := 0; i < len(a); i++ {
 			a[i] = strings.Trim(a[i], " ")
@@ -247,7 +254,9 @@ func ParseAtlas(fileBytes []byte) error {
 			err = page.ParsePageStr(a[1:])
 		}
 		if a[0] == "region" {
+			var region Region
 			err = region.ParseRegionStr(a[1:])
+			page.Regions[region.Name] = region
 		}
 
 	}
@@ -261,9 +270,11 @@ func StripAtlasLine(line []byte) string {
 	//remove newline and carrige return if it exists from line
 	line = bytes.ReplaceAll(line, []byte("\r"), []byte(""))
 	line = bytes.ReplaceAll(line, []byte("\n"), []byte(""))
-	//line = bytes.ReplaceAll(line, []byte(" "), []byte(""))
+	//remove mutiple spaces
+	re := regexp.MustCompile(`\s+`)
+	result := re.ReplaceAll(line, []byte(" "))
 
-	s := string(line)
+	s := string(result)
 	s = strings.Trim(s, " ")
 	return s
 }
