@@ -121,11 +121,11 @@ func (r *Region) ParseRegionStr(values []string) error {
 }
 
 // GetSpriteFrame gets the RECT for the given animation name and frame index in that animation
-func (r *Region) GetSpriteFrame(animName string, frameNumber int) (RECT, int, error) {
+func (r *Region) GetSpriteFrame(animName string, frameNumber int) (RECT, error) {
 	anim, ok := r.Anims[animName]
 	var rect RECT
 	if !ok {
-		return rect, frameNumber, errors.New("animation %q not found in region " + r.Name)
+		return rect, errors.New("animation %q not found in region " + r.Name)
 	}
 
 	rect = RECT{X: 0, Y: 0, Width: r.TileSize.X, Height: r.TileSize.Y}
@@ -141,9 +141,7 @@ func (r *Region) GetSpriteFrame(animName string, frameNumber int) (RECT, int, er
 	rect.X = frameNumber*r.TileSize.X + offsetX + r.Bounds.X
 	rect.Y = offsetY + r.Bounds.Y
 
-	//next frame
-	frameNumber = frameNumber + 1
-	return rect, frameNumber, nil
+	return rect, nil
 }
 
 func (r *Region) RegionToStr() string {

@@ -27,10 +27,11 @@ var (
 // TestReadAtlasRow is a test to verify file open and a Parse the of a test atlas
 func TestOpenAtlas(t *testing.T) {
 
-	page, region, err := Spriteatlas("", "atiles_test.atlas")
+	page, err := Spriteatlas("", "atiles_test.atlas")
 	if err != nil {
 		t.Errorf("got open file error %q", err)
 	}
+	region := page.Regions["player_walk"]
 	want := pageStr1Ans1
 	got := page.PageToStr() + ". " + region.RegionToStr()
 	if got != want {
@@ -103,7 +104,9 @@ func TestGetAnimation(t *testing.T) {
 
 	want := RECT{X: x[0], Y: y[0], Width: s, Height: s}
 
-	got, nextidx, err := reg.GetSpriteFrame("north", 0)
+	var nextidx = 0
+	got, err := reg.GetSpriteFrame("north", nextidx)
+	nextidx++
 
 	if err != nil {
 		t.Error(err.Error())
@@ -113,7 +116,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[1], Y: y[0], Width: s, Height: s}
-	got, nextidx, err = reg.GetSpriteFrame("north", nextidx)
+	got, err = reg.GetSpriteFrame("north", nextidx)
+	nextidx++
 
 	if err != nil {
 		t.Error(err.Error())
@@ -123,7 +127,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[2], Y: y[0], Width: s, Height: s}
-	got, nextidx, err = reg.GetSpriteFrame("north", nextidx)
+	got, err = reg.GetSpriteFrame("north", nextidx)
+	nextidx++
 
 	if err != nil {
 		t.Error(err.Error())
@@ -133,7 +138,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[3], Y: y[0], Width: s, Height: s}
-	got, nextidx, err = reg.GetSpriteFrame("north", nextidx)
+	got, err = reg.GetSpriteFrame("north", nextidx)
+	nextidx++
 
 	if err != nil {
 		t.Error(err.Error())
@@ -143,7 +149,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[0], Y: y[0], Width: 48, Height: 48}
-	got, nextidx, err = reg.GetSpriteFrame("north", nextidx)
+	got, err = reg.GetSpriteFrame("north", nextidx)
+	nextidx++
 
 	if err != nil {
 		t.Error(err.Error())
@@ -153,7 +160,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[0], Y: y[1], Width: s, Height: s}
-	got, nextidx, err = reg.GetSpriteFrame("south", 0)
+	got, err = reg.GetSpriteFrame("south", 0)
+	nextidx++
 
 	if err != nil {
 		t.Error(err.Error())
@@ -163,7 +171,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[1], Y: y[1], Width: s, Height: s}
-	got, nextidx, err = reg.GetSpriteFrame("south", nextidx)
+	got, err = reg.GetSpriteFrame("south", nextidx)
+	nextidx++
 
 	if err != nil {
 		t.Error(err.Error())
@@ -173,7 +182,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[2], Y: y[1], Width: s, Height: s}
-	got, nextidx, err = reg.GetSpriteFrame("south", nextidx)
+	got, err = reg.GetSpriteFrame("south", nextidx)
+	nextidx++
 
 	if err != nil {
 		t.Error(err.Error())
@@ -183,7 +193,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[3], Y: y[1], Width: s, Height: s}
-	got, nextidx, err = reg.GetSpriteFrame("south", nextidx)
+	got, err = reg.GetSpriteFrame("south", nextidx)
+	nextidx++
 
 	if err != nil {
 		t.Error(err.Error())
@@ -193,7 +204,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[0], Y: y[1], Width: 48, Height: 48}
-	got, nextidx, err = reg.GetSpriteFrame("south", nextidx)
+	got, err = reg.GetSpriteFrame("south", nextidx)
+	nextidx++
 
 	if err != nil {
 		t.Error(err.Error())
