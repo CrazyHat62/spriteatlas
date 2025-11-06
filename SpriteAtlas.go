@@ -120,8 +120,8 @@ func (r *Region) ParseRegionStr(values []string) error {
 	return nil
 }
 
-// GetSpriteFrame gets the RECT for the given animation name and frame index in that animation
-func (r *Region) GetSpriteFrame(animName string, frameNumber int) (RECT, error) {
+// GetFrameRect gets the RECT for the given animation name and frame index in that animation
+func (r *Region) GetFrameRect(animName string, frameNumber int) (RECT, error) {
 	anim, ok := r.Anims[animName]
 	var rect RECT
 	if !ok {
