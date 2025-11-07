@@ -54,8 +54,11 @@ func (r *Region) ParseRegionStr(values []string) error {
 	var errstr string = ""
 	r.Anims = make(map[string]Anim)
 	//player_walk 1,148,384,244 48,48 north,1,1,4 west,1,5,4 south,2,1,4 east,2,5,4
+
+	// 1st
 	r.Name = values[0]
 
+	// 2nd
 	p := strings.Split(values[1], ",")
 	px1, err := strconv.ParseInt(p[0], 0, 0)
 	if err != nil {
@@ -65,19 +68,15 @@ func (r *Region) ParseRegionStr(values []string) error {
 	if err != nil {
 		errstr = errstr + "Parse Region rect size Y1 failed, "
 	}
-	px2, err := strconv.ParseInt(p[2], 0, 0)
-	if err != nil {
-		errstr = errstr + "Parse Region rect size X2 failed, "
-	}
-	py2, err := strconv.ParseInt(p[3], 0, 0)
-	if err != nil {
-		errstr = errstr + "Parse Region rect size Y2 failed, "
-	}
 
-	r.Bounds.X = int(px1)
-	r.Bounds.Width = int(px2)
-	r.Bounds.Y = int(py1)
-	r.Bounds.Height = int(py2)
+	// px2, err := strconv.ParseInt(p[2], 0, 0)
+	// if err != nil {
+	// 	errstr = errstr + "Parse Region rect size X2 failed, "
+	// }
+	// py2, err := strconv.ParseInt(p[3], 0, 0)
+	// if err != nil {
+	// 	errstr = errstr + "Parse Region rect size Y2 failed, "
+	// }
 
 	t := strings.Split(values[2], ",")
 	tx, err := strconv.ParseInt(t[0], 0, 0)
@@ -89,6 +88,12 @@ func (r *Region) ParseRegionStr(values []string) error {
 		errstr = errstr + "Parse Region tile size Y failed, "
 	}
 
+	px2 := px1 + tx
+	py2 := py1 + ty
+	r.Bounds.X = int(px1)
+	r.Bounds.Width = int(px2)
+	r.Bounds.Y = int(py1)
+	r.Bounds.Height = int(py2)
 	r.TileSize.X = int(tx)
 	r.TileSize.Y = int(ty)
 
