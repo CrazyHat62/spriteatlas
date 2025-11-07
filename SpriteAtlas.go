@@ -33,7 +33,7 @@ type Anim struct {
 
 type Region struct {
 	Name     string
-	Bounds   RECT
+	Bounds   XY
 	TileSize XY
 	Anims    map[string]Anim
 }
@@ -78,6 +78,9 @@ func (r *Region) ParseRegionStr(values []string) error {
 	// 	errstr = errstr + "Parse Region rect size Y2 failed, "
 	// }
 
+	r.Bounds.X = int(px1)
+	r.Bounds.Y = int(py1)
+
 	t := strings.Split(values[2], ",")
 	tx, err := strconv.ParseInt(t[0], 0, 0)
 	if err != nil {
@@ -88,12 +91,6 @@ func (r *Region) ParseRegionStr(values []string) error {
 		errstr = errstr + "Parse Region tile size Y failed, "
 	}
 
-	px2 := px1 + tx
-	py2 := py1 + ty
-	r.Bounds.X = int(px1)
-	r.Bounds.Width = int(px2)
-	r.Bounds.Y = int(py1)
-	r.Bounds.Height = int(py2)
 	r.TileSize.X = int(tx)
 	r.TileSize.Y = int(ty)
 
@@ -126,17 +123,14 @@ func (r *Region) ParseRegionStr(values []string) error {
 }
 
 // GetFrameRect gets the RECT for the given animation name and frame index in that animation
-func (r *Region) GetFrameRect(animName string, frameNumber int) (RECT, error) {
+func (r *Region) GetFrameRect(animName string, frameNumber int) (RECT, int, error) {
 	anim, ok := r.Anims[animName]
 	var rect RECT
 	if !ok {
-		return rect, errors.New("animation %q not found in region " + r.Name)
+		return rect, frameNumber, errors.New("animation %q not found in region " + r.Name)
 	}
 
 	rect = RECT{X: 0, Y: 0, Width: r.TileSize.X, Height: r.TileSize.Y}
-
-	// frameNumber is zero based
-	frameNumber = frameNumber % anim.Count
 
 	//Change Anim Pos in Region Grid to zero based for calc
 	//Adjust Offset position of Animation in Region
@@ -146,7 +140,11 @@ func (r *Region) GetFrameRect(animName string, frameNumber int) (RECT, error) {
 	rect.X = frameNumber*r.TileSize.X + offsetX + r.Bounds.X
 	rect.Y = offsetY + r.Bounds.Y
 
-	return rect, nil
+	// frameNumber is zero based
+	frameNumber += 1
+	frameNumber = frameNumber % anim.Count
+
+	return rect, frameNumber, nil
 }
 
 func (r *Region) RegionToStr() string {

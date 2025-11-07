@@ -103,8 +103,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want := RECT{X: x[0], Y: y[0], Width: s, Height: s}
-	var nextidx = 0
-	got, err := reg.GetFrameRect("north", nextidx)
+
+	got, nextidx, err := reg.GetFrameRect("north", 0)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -114,8 +114,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[1], Y: y[0], Width: s, Height: s}
-	nextidx++
-	got, err = reg.GetFrameRect("north", nextidx)
+
+	got, nextidx, err = reg.GetFrameRect("north", nextidx)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -125,8 +125,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[2], Y: y[0], Width: s, Height: s}
-	nextidx++
-	got, err = reg.GetFrameRect("north", nextidx)
+
+	got, nextidx, err = reg.GetFrameRect("north", nextidx)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -136,8 +136,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[3], Y: y[0], Width: s, Height: s}
-	nextidx++
-	got, err = reg.GetFrameRect("north", nextidx)
+
+	got, nextidx, err = reg.GetFrameRect("north", nextidx)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -147,8 +147,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[0], Y: y[0], Width: 48, Height: 48}
-	nextidx++
-	got, err = reg.GetFrameRect("north", nextidx)
+
+	got, nextidx, err = reg.GetFrameRect("north", nextidx)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -159,7 +159,7 @@ func TestGetAnimation(t *testing.T) {
 
 	want = RECT{X: x[0], Y: y[1], Width: s, Height: s}
 	nextidx = 0
-	got, err = reg.GetFrameRect("south", nextidx)
+	got, nextidx, err = reg.GetFrameRect("south", nextidx)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -169,8 +169,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[1], Y: y[1], Width: s, Height: s}
-	nextidx++
-	got, err = reg.GetFrameRect("south", nextidx)
+
+	got, nextidx, err = reg.GetFrameRect("south", nextidx)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -180,8 +180,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[2], Y: y[1], Width: s, Height: s}
-	nextidx++
-	got, err = reg.GetFrameRect("south", nextidx)
+
+	got, nextidx, err = reg.GetFrameRect("south", nextidx)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -191,8 +191,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[3], Y: y[1], Width: s, Height: s}
-	nextidx++
-	got, err = reg.GetFrameRect("south", nextidx)
+
+	got, nextidx, err = reg.GetFrameRect("south", nextidx)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -202,8 +202,8 @@ func TestGetAnimation(t *testing.T) {
 	}
 
 	want = RECT{X: x[0], Y: y[1], Width: 48, Height: 48}
-	nextidx++
-	got, err = reg.GetFrameRect("south", nextidx)
+
+	got, nextidx, err = reg.GetFrameRect("south", nextidx)
 
 	if err != nil {
 		t.Error(err.Error())
