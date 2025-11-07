@@ -33,7 +33,7 @@ type Anim struct {
 
 type Region struct {
 	Name     string
-	Bounds   XY
+	Pos      XY
 	TileSize XY
 	Anims    map[string]Anim
 }
@@ -78,8 +78,8 @@ func (r *Region) ParseRegionStr(values []string) error {
 	// 	errstr = errstr + "Parse Region rect size Y2 failed, "
 	// }
 
-	r.Bounds.X = int(px1)
-	r.Bounds.Y = int(py1)
+	r.Pos.X = int(px1)
+	r.Pos.Y = int(py1)
 
 	t := strings.Split(values[2], ",")
 	tx, err := strconv.ParseInt(t[0], 0, 0)
@@ -137,8 +137,8 @@ func (r *Region) GetFrameRect(animName string, frameNumber int) (RECT, int, erro
 	offsetX := (anim.Pos.X - 1) * r.TileSize.X
 	offsetY := (anim.Pos.Y - 1) * r.TileSize.Y
 
-	rect.X = frameNumber*r.TileSize.X + offsetX + r.Bounds.X
-	rect.Y = offsetY + r.Bounds.Y
+	rect.X = frameNumber*r.TileSize.X + offsetX + r.Pos.X
+	rect.Y = offsetY + r.Pos.Y
 
 	// frameNumber is zero based
 	frameNumber += 1
