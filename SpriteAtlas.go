@@ -29,6 +29,8 @@ func (r *RECT) RectToStr() string {
 type Anim struct {
 	Pos   XY
 	Count int
+	Step  bool
+	Loop  bool
 }
 
 type Region struct {
@@ -69,15 +71,6 @@ func (r *Region) ParseRegionStr(values []string) error {
 		errstr = errstr + "Parse Region rect size Y1 failed, "
 	}
 
-	// px2, err := strconv.ParseInt(p[2], 0, 0)
-	// if err != nil {
-	// 	errstr = errstr + "Parse Region rect size X2 failed, "
-	// }
-	// py2, err := strconv.ParseInt(p[3], 0, 0)
-	// if err != nil {
-	// 	errstr = errstr + "Parse Region rect size Y2 failed, "
-	// }
-
 	r.Pos.X = int(px1)
 	r.Pos.Y = int(py1)
 
@@ -112,7 +105,18 @@ func (r *Region) ParseRegionStr(values []string) error {
 			errstr = errstr + fmt.Sprintf("Parse Anim %q count failed, ", i[0])
 		}
 		pos := XY{row, col}
-		anim := Anim{Pos: pos, Count: count}
+		step := false
+		loop := true
+		if len(i) > 3 {
+			if i[4] == "step" {
+				step = true
+			}
+			if i[4] == "once" {
+				loop = false
+			}
+		}
+		anim := Anim{Pos: pos, Count: count, Step: step, Loop: loop}
+
 		r.Anims[i[0]] = anim
 	}
 
@@ -123,11 +127,14 @@ func (r *Region) ParseRegionStr(values []string) error {
 }
 
 // GetFrameRect gets the RECT for the given animation name and frame index in that animation
-func (r *Region) GetFrameRect(animName string, frameNumber int) (RECT, int, error) {
+func (r *Region) GetFrameRect(animName string, frameNumber int) (RECT, int, bool, bool, error) {
 	anim, ok := r.Anims[animName]
+	step := anim.Step
+	loop := anim.Loop
+
 	var rect RECT
 	if !ok {
-		return rect, frameNumber, errors.New("animation %q not found in region " + r.Name)
+		return rect, frameNumber, step, loop, errors.New("animation %q not found in region " + r.Name)
 	}
 
 	rect = RECT{X: 0, Y: 0, Width: r.TileSize.X, Height: r.TileSize.Y}
@@ -144,7 +151,7 @@ func (r *Region) GetFrameRect(animName string, frameNumber int) (RECT, int, erro
 	frameNumber += 1
 	frameNumber = frameNumber % anim.Count
 
-	return rect, frameNumber, nil
+	return rect, frameNumber, step, loop, nil
 }
 
 func (r *Region) RegionToStr() string {
