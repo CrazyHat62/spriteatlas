@@ -87,7 +87,16 @@ func (r *Region) ParseRegionStr(values []string) error {
 	r.TileSize.X = int(tx)
 	r.TileSize.Y = int(ty)
 
-	for _, item := range values[3:] {
+	errstr = parseAnimStr(values[3:], errstr, r)
+
+	if errstr != "" {
+		return errors.New(errstr)
+	}
+	return nil
+}
+
+func parseAnimStr(values []string, errstr string, r *Region) string {
+	for _, item := range values {
 		i := strings.Split(item, ",")
 		r1, err := strconv.ParseInt(i[1], 0, 0)
 		row := int(r1)
@@ -107,7 +116,7 @@ func (r *Region) ParseRegionStr(values []string) error {
 		pos := XY{row, col}
 		step := false
 		loop := true
-		if len(i) > 3 {
+		if len(i) > 4 {
 			if i[4] == "step" {
 				step = true
 			}
@@ -119,11 +128,7 @@ func (r *Region) ParseRegionStr(values []string) error {
 
 		r.Anims[i[0]] = anim
 	}
-
-	if errstr != "" {
-		return errors.New(errstr)
-	}
-	return nil
+	return errstr
 }
 
 // GetFrameRect gets the RECT for the given animation name and frame index in that animation
@@ -246,6 +251,7 @@ func Spriteatlas(filePath string, fileName string) (*Page, error) {
 func ParseAtlas(fileBytes []byte) error {
 	var str string
 	var err error
+	var region Region
 
 	for line := range bytes.Lines(fileBytes) {
 
@@ -258,13 +264,20 @@ func ParseAtlas(fileBytes []byte) error {
 		for i := 0; i < len(a); i++ {
 			a[i] = strings.Trim(a[i], " ")
 		}
-		if a[0] == "page" {
+
+		switch {
+		case a[0] == "page":
 			err = page.ParsePageStr(a[1:])
-		}
-		if a[0] == "region" {
-			var region Region
+		case a[0] == "region":
+			region = Region{}
 			err = region.ParseRegionStr(a[1:])
 			page.Regions[region.Name] = region
+		default:
+			errstr := parseAnimStr(a[:], "", &region)
+			if err != nil {
+				errstr = err.Error() + errstr
+			}
+			err = errors.New(errstr)
 		}
 
 	}
