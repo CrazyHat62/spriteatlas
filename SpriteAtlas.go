@@ -131,15 +131,17 @@ func parseAnimStr(values []string, errstr string, r *Region) string {
 	return errstr
 }
 
-// GetFrameRect gets the RECT for the given animation name and frame index in that animation
-func (r *Region) GetFrameRect(animName string, frameNumber int) (RECT, int, bool, bool, error) {
+func (r *Region) GetAnimation(animName string) (Anim, error) {
 	anim, ok := r.Anims[animName]
 	if !ok {
-		return RECT{}, 0, false, false, errors.New("animation %q not found in region " + r.Name)
+		return Anim{}, errors.New("animation %q not found in region " + r.Name)
 	}
+	return anim, nil
+}
 
-	step := anim.Step
-	loop := anim.Loop
+// GetFrameRect gets the RECT for the given animation name and frame index in that animation
+func (r *Region) GetFrameRect(anim Anim, frameNumber int) (RECT, error) {
+
 	var rect RECT
 
 	rect = RECT{X: 0, Y: 0, Width: r.TileSize.X, Height: r.TileSize.Y}
@@ -152,7 +154,7 @@ func (r *Region) GetFrameRect(animName string, frameNumber int) (RECT, int, bool
 	rect.X = frameNumber*r.TileSize.X + offsetX + r.Pos.X
 	rect.Y = offsetY + r.Pos.Y
 
-	return rect, anim.Count, step, loop, nil
+	return rect, nil
 }
 
 func (r *Region) RegionToStr() string {
