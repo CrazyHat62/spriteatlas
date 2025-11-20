@@ -11,7 +11,7 @@ module YourApp
 
 go 1.25.2
 
-require github.com/CrazyHat62/spriteatlas v0.0.0-20251029202143-4517a52392f3
+require github.com/CrazyHat62/SpriteAtlas v0.1.1
 
 
 ## in main.go
