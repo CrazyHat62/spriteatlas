@@ -75,7 +75,7 @@ func (r *Region) RegionToStr() string {
 // *********************PAGE*********************
 
 // Spriteatlas reads a atlas at Path + Name ~ use forward slash(s) in path.
-// reads the spritesheet as an image and will 'overwrite' alpha color if specified and found.
+// reads the spritesheet and will 'overwrite' alpha color if specified and found.
 // alpha-color is NOT the same as pre-multiplied-alpha
 func Spriteatlas(filePath string, fileName string) (*Page, error) {
 
@@ -121,7 +121,7 @@ func ParseAtlas(fileBytes []byte) error {
 			errstr := parseAnimStr(a[:], "", &region)
 			if errstr != "" {
 				if err != nil {
-					errstr = err.Error() + errstr
+					err = errors.New(err.Error() + errstr)
 				} else {
 					err = errors.New(errstr)
 				}
@@ -255,9 +255,9 @@ func (r *Region) ParseRegionStr(values []string) error {
 // GetFrameRect relies on a anim struct from GetAnimation and a framenumber to return the wanted Rect X,Y,Width,Height (all int)
 func (r *Region) GetFrameRect(anim Anim, frameNumber int) (RECT, error) {
 
-	var rect RECT
+	//var rect RECT
 
-	rect = RECT{X: 0, Y: 0, Width: r.TileSize.X, Height: r.TileSize.Y}
+	rect := RECT{X: 0, Y: 0, Width: r.TileSize.X, Height: r.TileSize.Y}
 
 	//Change Anim Pos in Region Grid to zero based for calc
 	//Adjust Offset position of Animation in Region
