@@ -12,3 +12,6 @@
 
 page atiles.bmp 255,0,255,255 true 1729,874 1,1,1,1
 region player_walk 1,148,384,243 48,48 north,1,1,4 west,5,1,4 south,1,2,4 east,5,2,4
+# these frames are stored in the region above - see code
+south,1,2,4 
+east,5,2,4

@@ -1,20 +1,15 @@
 # SpriteAtlas for Go - currently to read the sprite atlas and provide sufficient data to read frames
 
+[MIT licence](MIT-LICENCE.md)
+
 Changed the spriteatlas path for public use
 still not ready and is subject to changes, but can be used as example till ready
 
-example use at the moment
-
-## in go.mod
-
-module YourApp
-
-go 1.25.2
-
-require github.com/CrazyHat62/SpriteAtlas v0.1.1
+[example](atiles_test.atlas)
 
 
-## in main.go
+
+## in main.go EXAMPLE
 
 package main
 
@@ -39,3 +34,28 @@ func main() {
 ## Use main.go and Run go mod tidy
 
 as it says the version may not work as will change as time goes
+be sure to use SpriteAtlas with the upper-case characters during this alpha phase ~ it may change
+
+## Using the library
+
+in the go.mod file :
+
+    github.com/CrazyHat62/SpriteAtlas v0.1.2
+
+in your main.go
+
+```
+import (
+	"fmt"
+	"os"
+
+	sa "github.com/CrazyHat62/SpriteAtlas"
+	rl "github.com/gen2brain/raylib-go/raylib"
+)
+```
+
+Note 
+
+	I use raylib-go, and have a function that will replace alpha-color in an 
+	found at github.com/CrazyHat62/go-rommy which should be public by the time you find this
+

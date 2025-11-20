@@ -119,10 +119,13 @@ func ParseAtlas(fileBytes []byte) error {
 			page.Regions[region.Name] = region
 		default:
 			errstr := parseAnimStr(a[:], "", &region)
-			if err != nil {
-				errstr = err.Error() + errstr
+			if errstr != "" {
+				if err != nil {
+					errstr = err.Error() + errstr
+				} else {
+					err = errors.New(errstr)
+				}
 			}
-			err = errors.New(errstr)
 		}
 
 	}
