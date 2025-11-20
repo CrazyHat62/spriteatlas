@@ -21,7 +21,7 @@ package main
 import (
 	"os"
 
-	sa "github.com/CrazyHat62/spriteatlas"
+	sa "github.com/CrazyHat62/SpriteAtlas"
 )
 
 func main() {
