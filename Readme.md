@@ -56,6 +56,6 @@ import (
 
 Note 
 
-	I use raylib-go, and have a function that will replace alpha-color in an 
-	found at github.com/CrazyHat62/go-rommy which should be public by the time you find this
+	I use raylib-go, and have a function that will replace alpha-color in a image.
+	This can be found in a test-app github.com/CrazyHat62/go-rommy which should be public by the time you find this
 
