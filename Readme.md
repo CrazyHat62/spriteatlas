@@ -1,4 +1,4 @@
-# SpriteAtlas for Go - currently to read the sprite atlas and provide sufficient data to read frames
+# SpriteAtlas for Go - currently to read the sprite atlas and provide sufficient data to use animation frames
 
 [MIT licence](MIT-LICENCE.md)
 
